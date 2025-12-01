@@ -60,9 +60,9 @@ fn open_or_create_collection_db(path: &Path) -> Result<Connection> {
         );
     }
 
-    db.busy_timeout(std::time::Duration::from_secs(0))?;
+    db.busy_timeout(std::time::Duration::from_secs(5))?;
 
-    db.pragma_update(None, "locking_mode", "exclusive")?;
+    db.pragma_update(None, "locking_mode", "normal")?;
     db.pragma_update(None, "page_size", 4096)?;
     db.pragma_update(None, "cache_size", -40 * 1024)?;
     db.pragma_update(None, "legacy_file_format", false)?;
@@ -505,7 +505,7 @@ impl SqliteStorage {
 
         let upgrade = ver != SCHEMA_MAX_VERSION;
         if create || upgrade {
-            db.execute("begin exclusive", [])?;
+            db.execute("begin immediate", [])?;
         }
 
         if create {
@@ -584,7 +584,7 @@ impl SqliteStorage {
     //////////////////////////////////////
 
     pub(crate) fn begin_trx(&self) -> Result<()> {
-        self.db.prepare_cached("begin exclusive")?.execute([])?;
+        self.db.prepare_cached("begin immediate")?.execute([])?;
         Ok(())
     }
 
