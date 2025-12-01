@@ -24,8 +24,8 @@ impl ServerMediaDatabase {
 
 fn open_or_create_db(path: &Path) -> Result<Connection> {
     let db = Connection::open(path)?;
-    db.busy_timeout(std::time::Duration::from_secs(0))?;
-    db.pragma_update(None, "locking_mode", "exclusive")?;
+    db.busy_timeout(std::time::Duration::from_secs(60))?;
+    db.pragma_update(None, "locking_mode", "normal")?;
     db.pragma_update(None, "journal_mode", "wal")?;
     let ver: u32 = db.query_row("select user_version from pragma_user_version", [], |r| {
         r.get(0)

@@ -60,13 +60,14 @@ fn open_or_create_collection_db(path: &Path) -> Result<Connection> {
         );
     }
 
-    db.busy_timeout(std::time::Duration::from_secs(5))?;
+    db.busy_timeout(std::time::Duration::from_secs(60))?;
 
     db.pragma_update(None, "locking_mode", "normal")?;
     db.pragma_update(None, "page_size", 4096)?;
     db.pragma_update(None, "cache_size", -40 * 1024)?;
     db.pragma_update(None, "legacy_file_format", false)?;
     db.pragma_update(None, "journal_mode", "wal")?;
+    db.pragma_update(None, "synchronous", "normal")?;
     // Android has no /tmp folder, and fails in the default config.
     #[cfg(target_os = "android")]
     db.pragma_update(None, "temp_store", &"memory")?;
