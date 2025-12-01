@@ -36,7 +36,7 @@ use crate::text::without_combining;
 use crate::text::CowMapping;
 
 fn unicase_compare(s1: &str, s2: &str) -> Ordering {
-    UniCase::new(s1).cmp(&UniCase::new(s2)) 
+    UniCase::new(s1).cmp(&UniCase::new(s2))
 }
 
 // fixme: rollback savepoint when tags not changed
